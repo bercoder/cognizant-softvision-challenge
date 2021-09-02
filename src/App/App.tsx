@@ -20,8 +20,20 @@ export default function App() {
   const [candidates, setCandidates] = useState<Candidate[]>([])
 
   useEffect(() => {
-    Api.candidates.list().then((res) => setCandidates(res))
+    const local = localStorage.getItem('candidates')
+
+    if (local) {
+      setCandidates(JSON.parse(local))
+    } else {
+      Api.candidates.list().then((res) => setCandidates(res))
+    }
   }, [])
+
+  useEffect(() => {
+    if (candidates.length > 0) {
+      localStorage.setItem('candidates', JSON.stringify(candidates))
+    }
+  }, [candidates])
 
   return (
     <ChakraProvider theme={theme}>
